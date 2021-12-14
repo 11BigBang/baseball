@@ -2,12 +2,12 @@ from scrape import Scrape
 
 yr_to_scrape = 2021
 scrape = Scrape()
-team_scrape = scrape.team_batting_scrape(['TB','G','R'], yr_to_scrape)
-# p_scrape = scrape.pitcher_scrape(yr_to_scrape)
-matchups = scrape.get_matchups()
+# team_scrape = scrape.team_batting_scrape(['TB','G','R'], yr_to_scrape)
+p_scrape = scrape.pitcher_scrape(yr_to_scrape)
+# matchups = scrape.get_matchups()
 
-print(team_scrape)
-# print(p_scrape)
+# print(team_scrape)
+print(p_scrape)
 
 def compile():
     data = []

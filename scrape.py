@@ -66,35 +66,36 @@ class Scrape:
             }
 
         """
-        p_list, all_metrics = [], []
+        nm_list, g_list, ip_list, tb_list, ct1, ct2 = [], [], [], [], 1, 0
         metric_list = ['G', 'IP', 'TB']
         p_url = f'https://baseballsavant.mlb.com/leaderboard/custom?year={str(year)}&type=pitcher&filter= \
         &sort=1&sortDir=asc&min=100&selections=p_game,p_formatted_ip,p_total_bases,&chart=false \
         &x=p_total_bases&y=p_total_bases&r=no&chartType=beeswarm'
         self.driver.get(p_url)
-        p_path = f"//th[@data-stat='team_name']"
-        p_elements = self.driver.find_elements(By.XPATH, p_path)
+        time.sleep(10)
+        p_elements = self.driver.find_elements(By.TAG_NAME, 'td')
 
-        for k in range(1, 31):
-            p_list.append(p_elements[k].text)
+        for data in p_elements:
+            if ct1 == 6:
+                tb_list.append(data.text)
+            elif ct1 == 5:
+                ip_list.append(data.text)
+            elif ct1 == 4:
+                g_list.append(data.text)
+            elif ct1 == 2:
+                nm_list.append(data.text)
+            else:
+                pass
+            ct1 += 1
 
-        for metric in metric_list:
-            temp = []
-            xpath = f"//td[@data-stat='{metric}']"
-            elements = self.driver.find_elements(By.XPATH, xpath)
-
-            for i in range(30):
-                temp.append(float(elements[i].text))
-
-            all_metrics.append(temp)
+            if ct1 == 7:
+                ct1 = 1
 
         self.driver.quit()
 
-        for ct in range(30):
-            metric_dict = {}
-            for k in range(len(metric_list)):
-                metric_dict[metric_list[k]] = all_metrics[k][ct]
-            self.p_results[p_list[ct]] = metric_dict
+        for p in nm_list:
+            self.p_results[p] = {'G': g_list[ct2], 'IP': ip_list[ct2], 'TB': tb_list[ct2]}
+            ct2 += 1
 
         return self.p_results
 
